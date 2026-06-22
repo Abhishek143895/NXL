@@ -11,11 +11,11 @@ interface MagneticButtonProps {
 }
 
 export function MagneticButton({ children, className = "", href, onClick }: MagneticButtonProps) {
-  const btnRef = useRef<HTMLDivElement>(null);
+  const btnRef = useRef<HTMLDivElement | HTMLAnchorElement>(null);
   const [x, setX] = useState(0);
   const [y, setY] = useState(0);
 
-  const handleMouseMove = (e: React.MouseEvent) => {
+  const handleMouseMove = (e: React.MouseEvent<HTMLElement>) => {
     if (!btnRef.current) return;
     const rect = btnRef.current.getBoundingClientRect();
     const centerX = rect.left + rect.width / 2;
@@ -31,20 +31,22 @@ export function MagneticButton({ children, className = "", href, onClick }: Magn
     setY(0);
   };
 
-  const Component = href ? motion.a : motion.div;
+  const commonProps = {
+    onClick,
+    onMouseMove: handleMouseMove,
+    onMouseLeave: handleMouseLeave,
+    animate: { x, y },
+    transition: { type: "spring", stiffness: 200, damping: 15 },
+    className: `inline-block cursor-pointer ${className}`,
+  };
 
-  return (
-    <Component
-      ref={btnRef}
-      href={href}
-      onClick={onClick}
-      onMouseMove={handleMouseMove}
-      onMouseLeave={handleMouseLeave}
-      animate={{ x, y }}
-      transition={{ type: "spring", stiffness: 200, damping: 15 }}
-      className={`inline-block cursor-pointer ${className}`}
-    >
+  return href ? (
+    <motion.a ref={btnRef as React.RefObject<HTMLAnchorElement>} href={href} {...commonProps}>
       {children}
-    </Component>
+    </motion.a>
+  ) : (
+    <motion.div ref={btnRef as React.RefObject<HTMLDivElement>} {...commonProps}>
+      {children}
+    </motion.div>
   );
 }
