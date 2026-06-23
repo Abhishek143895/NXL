@@ -7,7 +7,7 @@ export function Footer() {
           <div className="md:col-span-2">
             <h3 className="text-2xl font-bold gradient-text mb-4">Nexloom</h3>
             <p className="opacity-60 max-w-sm leading-relaxed">
-              Building the future of digital experiences with AI, modern tech, and creative strategy.
+              Building the future of digital experiences with AI, modern tech, and creative strategies.
             </p>
           </div>
 
