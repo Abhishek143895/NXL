@@ -87,17 +87,17 @@ export function Contact() {
                 <div>
                   <label className="block text-sm font-medium mb-2 opacity-70">Service Interested In</label>
                   <select
-                    className="w-full px-4 py-3 rounded-xl bg-transparent border border-[var(--card-border)] focus:border-blue-500 focus:outline-none transition-colors"
+                    className="w-full px-4 py-3 rounded-xl bg-[var(--background)] text-[var(--foreground)] border border-[var(--card-border)] focus:border-blue-500 focus:outline-none transition-colors"
                     defaultValue=""
                   >
-                    <option value="" disabled>Select a service</option>
-                    <option value="ai">AI Solutions</option>
-                    <option value="web">Web & App Development</option>
-                    <option value="marketing">Digital Marketing</option>
-                    <option value="automation">Business Automation</option>
-                    <option value="bi">Business Intelligence</option>
-                    <option value="infrastructure">Smart Infrastructure</option>
-                    <option value="other">Other</option>
+                    <option value="" disabled className="bg-[#0d0d14] text-white">Select a service</option>
+                    <option value="ai" className="bg-[#0d0d14] text-white">AI Solutions</option>
+                    <option value="web" className="bg-[#0d0d14] text-white">Web & App Development</option>
+                    <option value="marketing" className="bg-[#0d0d14] text-white">Digital Marketing</option>
+                    <option value="automation" className="bg-[#0d0d14] text-white">Business Automation</option>
+                    <option value="bi" className="bg-[#0d0d14] text-white">Business Intelligence</option>
+                    <option value="infrastructure" className="bg-[#0d0d14] text-white">Smart Infrastructure</option>
+                    <option value="other" className="bg-[#0d0d14] text-white">Other</option>
                   </select>
                 </div>
                 <div>

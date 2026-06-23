@@ -2,7 +2,7 @@
 
 import { FadeUp } from "@/components/animations";
 import { motion, AnimatePresence } from "framer-motion";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 
 const testimonials = [
   {
@@ -27,6 +27,7 @@ const testimonials = [
 
 export function Testimonials() {
   const [current, setCurrent] = useState(0);
+  const touchStartX = useRef<number | null>(null);
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -34,6 +35,23 @@ export function Testimonials() {
     }, 5000);
     return () => clearInterval(timer);
   }, []);
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    touchStartX.current = e.touches[0].clientX;
+  };
+
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    if (touchStartX.current === null) return;
+    const diff = touchStartX.current - e.changedTouches[0].clientX;
+    if (Math.abs(diff) > 50) {
+      if (diff > 0) {
+        setCurrent((prev) => (prev + 1) % testimonials.length);
+      } else {
+        setCurrent((prev) => (prev - 1 + testimonials.length) % testimonials.length);
+      }
+    }
+    touchStartX.current = null;
+  };
 
   return (
     <section className="py-24 px-6 relative overflow-hidden">
@@ -48,7 +66,11 @@ export function Testimonials() {
           </h2>
         </FadeUp>
 
-        <div className="relative min-h-[280px]">
+        <div
+          className="relative min-h-[280px]"
+          onTouchStart={handleTouchStart}
+          onTouchEnd={handleTouchEnd}
+        >
           <AnimatePresence mode="wait">
             <motion.div
               key={current}

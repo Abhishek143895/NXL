@@ -58,7 +58,7 @@ function AnimatedTimeline() {
   return (
     <div
       ref={lineRef}
-      className="absolute left-8 top-0 bottom-0 w-0.5 bg-gradient-to-b from-blue-500 via-purple-500 to-blue-500 hidden md:block origin-top"
+      className="absolute left-8 top-0 bottom-0 w-0.5 bg-gradient-to-b from-blue-500 via-purple-500 to-blue-500 origin-top"
       style={{ transform: "scaleY(0)" }}
     />
   );

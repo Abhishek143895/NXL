@@ -47,10 +47,9 @@ function ServicesMegaMenu({ currentSlug }: { currentSlug: string | null }) {
       animate={{ opacity: 1, y: 0, scale: 1 }}
       exit={{ opacity: 0, y: 10, scale: 0.95 }}
       transition={{ duration: 0.2, ease: "easeOut" }}
-      className="absolute top-full left-1/2 -translate-x-1/2 mt-4 w-[600px] p-6 rounded-2xl shadow-2xl border border-[var(--card-border)] bg-[#0d0d14]/95 backdrop-blur-xl"
+      className="absolute top-full right-0 mt-4 w-[min(600px,calc(100vw-2rem))] p-6 rounded-2xl shadow-2xl border border-[var(--card-border)] bg-[#0d0d14]/95 backdrop-blur-xl"
     >
-      {/* Arrow */}
-      <div className="absolute -top-2 left-1/2 -translate-x-1/2 w-4 h-4 rotate-45 glass-card border-b-0 border-r-0" />
+      <div className="absolute -top-2 right-8 w-4 h-4 rotate-45 glass-card border-b-0 border-r-0" />
 
       <div className="grid grid-cols-2 gap-3">
         {services.map((service) => {
@@ -60,18 +59,12 @@ function ServicesMegaMenu({ currentSlug }: { currentSlug: string | null }) {
               key={service.title}
               href={`/services/${service.slug}`}
               className={`flex items-start gap-3 p-3 rounded-xl transition-colors group ${
-                isActive
-                  ? "bg-blue-500/15 ring-1 ring-blue-500/40"
-                  : "hover:bg-blue-500/10"
+                isActive ? "bg-blue-500/15 ring-1 ring-blue-500/40" : "hover:bg-blue-500/10"
               }`}
             >
-              <span className="text-2xl group-hover:scale-110 transition-transform">
-                {service.icon}
-              </span>
+              <span className="text-2xl group-hover:scale-110 transition-transform">{service.icon}</span>
               <div>
-                <div className={`font-medium text-sm transition-colors ${
-                  isActive ? "text-blue-400" : "group-hover:text-blue-400"
-                }`}>
+                <div className={`font-medium text-sm transition-colors ${isActive ? "text-blue-400" : "group-hover:text-blue-400"}`}>
                   {service.title}
                 </div>
                 <div className="text-xs opacity-50">{service.desc}</div>
@@ -101,7 +94,7 @@ function ProductsMegaMenu() {
       animate={{ opacity: 1, y: 0, scale: 1 }}
       exit={{ opacity: 0, y: 10, scale: 0.95 }}
       transition={{ duration: 0.2, ease: "easeOut" }}
-      className="absolute top-full left-1/2 -translate-x-1/2 mt-4 w-[380px] p-6 rounded-2xl shadow-2xl border border-[var(--card-border)] bg-[#0d0d14]/95 backdrop-blur-xl"
+      className="absolute top-full left-1/2 -translate-x-1/2 mt-4 w-[min(380px,calc(100vw-2rem))] p-6 rounded-2xl shadow-2xl border border-[var(--card-border)] bg-[#0d0d14]/95 backdrop-blur-xl"
     >
       <div className="absolute -top-2 left-1/2 -translate-x-1/2 w-4 h-4 rotate-45 glass-card border-b-0 border-r-0" />
 
@@ -130,15 +123,13 @@ function ProductsMegaMenu() {
 export function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [mobileServicesOpen, setMobileServicesOpen] = useState(false);
   const [activeMenu, setActiveMenu] = useState<string | null>(null);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
   const pathname = usePathname();
   const router = useRouter();
 
-  // Extract current service slug from pathname
-  const currentServiceSlug = pathname.startsWith("/services/")
-    ? pathname.replace("/services/", "")
-    : null;
+  const currentServiceSlug = pathname.startsWith("/services/") ? pathname.replace("/services/", "") : null;
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 50);
@@ -155,16 +146,35 @@ export function Navbar() {
     timeoutRef.current = setTimeout(() => setActiveMenu(null), 200);
   };
 
+  const handleMobileNavClick = (e: React.MouseEvent, href: string, megaMenu?: string) => {
+    if (megaMenu === "services") {
+      e.preventDefault();
+      setMobileServicesOpen((v) => !v);
+      return;
+    }
+    if (href.startsWith("#")) {
+      e.preventDefault();
+      setMobileOpen(false);
+      setMobileServicesOpen(false);
+      setTimeout(() => {
+        if (pathname === "/") {
+          document.getElementById(href.slice(1))?.scrollIntoView({ behavior: "smooth" });
+        } else {
+          router.push("/" + href);
+        }
+      }, 300);
+    }
+  };
+
   return (
     <motion.nav
       initial={{ y: -100 }}
       animate={{ y: 0 }}
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 border-b ${
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 border-b navbar-custom ${
         scrolled ? "bg-[var(--background)]/80 backdrop-blur-xl border-[var(--card-border)] py-3" : "border-transparent py-5"
       }`}
     >
       <div className="max-w-7xl mx-auto px-6 flex items-center justify-between">
-        {/* Logo with bounce */}
         <Link href="/">
           <motion.span
             className="text-2xl font-bold gradient-text"
@@ -176,7 +186,6 @@ export function Navbar() {
           </motion.span>
         </Link>
 
-        {/* Desktop Links */}
         <div className="hidden md:flex items-center gap-1">
           {navLinks.map((link) => (
             <div
@@ -210,25 +219,17 @@ export function Navbar() {
                 />
               </a>
 
-              {/* Mega Menus */}
               <AnimatePresence>
                 {activeMenu === "services" && link.megaMenu === "services" && (
                   <ServicesMegaMenu currentSlug={currentServiceSlug} />
                 )}
-                {activeMenu === "products" && link.megaMenu === "products" && (
-                  <ProductsMegaMenu />
-                )}
+                {activeMenu === "products" && link.megaMenu === "products" && <ProductsMegaMenu />}
               </AnimatePresence>
             </div>
           ))}
         </div>
 
-        {/* Mobile menu button */}
-        <button
-          className="md:hidden p-2"
-          onClick={() => setMobileOpen(!mobileOpen)}
-          aria-label="Toggle menu"
-        >
+        <button className="md:hidden p-2" onClick={() => setMobileOpen(!mobileOpen)} aria-label="Toggle menu">
           <div className="w-6 h-5 flex flex-col justify-between">
             <span className={`h-0.5 w-full bg-current transition-transform ${mobileOpen ? "rotate-45 translate-y-2" : ""}`} />
             <span className={`h-0.5 w-full bg-current transition-opacity ${mobileOpen ? "opacity-0" : ""}`} />
@@ -237,25 +238,61 @@ export function Navbar() {
         </button>
       </div>
 
-      {/* Mobile Menu */}
       <AnimatePresence>
         {mobileOpen && (
           <motion.div
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
-            className="md:hidden overflow-hidden glass-card mt-2 mx-4 rounded-xl"
+            className="md:hidden overflow-hidden bg-[#0d0d14]/95 backdrop-blur-xl border border-[var(--card-border)] mt-2 mx-3 rounded-2xl"
           >
-            <div className="p-6">
+            <div className="p-4">
               {navLinks.map((link) => (
-                <a
-                  key={link.href}
-                  href={link.href}
-                  className="block py-3 text-lg font-medium opacity-70 hover:opacity-100 hover:translate-x-2 transition-all"
-                  onClick={() => setMobileOpen(false)}
-                >
-                  {link.label}
-                </a>
+                <div key={link.href}>
+                  <a
+                    href={link.href}
+                    className="flex items-center justify-between py-3 px-3 text-base font-medium opacity-70 hover:opacity-100 rounded-xl hover:bg-white/5 transition-all"
+                    onClick={(e) => handleMobileNavClick(e, link.href, link.megaMenu)}
+                  >
+                    {link.label}
+                    {link.megaMenu === "services" && (
+                      <span className={`text-xs transition-transform duration-200 inline-block ${mobileServicesOpen ? "rotate-180" : ""}`}>▾</span>
+                    )}
+                  </a>
+                  {link.megaMenu === "services" && (
+                    <AnimatePresence>
+                      {mobileServicesOpen && (
+                        <motion.div
+                          initial={{ opacity: 0, height: 0 }}
+                          animate={{ opacity: 1, height: "auto" }}
+                          exit={{ opacity: 0, height: 0 }}
+                          className="overflow-hidden ml-2 mb-1"
+                        >
+                          <div className="grid grid-cols-2 gap-1 py-1">
+                            {services.map((service) => {
+                              const isActive = currentServiceSlug === service.slug;
+                              return (
+                                <Link
+                                  key={service.slug}
+                                  href={`/services/${service.slug}`}
+                                  className={`flex items-center gap-2 py-2 px-3 rounded-lg transition-colors ${
+                                    isActive ? "bg-blue-500/15 ring-1 ring-blue-500/40" : "hover:bg-blue-500/10"
+                                  }`}
+                                  onClick={() => { setMobileOpen(false); setMobileServicesOpen(false); }}
+                                >
+                                  <span className="text-base">{service.icon}</span>
+                                  <span className={`text-xs font-medium leading-tight ${
+                                    isActive ? "text-blue-400" : ""
+                                  }`}>{service.title}</span>
+                                </Link>
+                              );
+                            })}
+                          </div>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+                  )}
+                </div>
               ))}
             </div>
           </motion.div>
