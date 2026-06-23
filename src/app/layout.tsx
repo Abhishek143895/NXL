@@ -1,8 +1,4 @@
-<<<<<<< HEAD
-import type { Metadata } from "next";
-=======
 import type { Metadata, Viewport } from "next";
->>>>>>> main
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
@@ -12,16 +8,12 @@ import { NoiseOverlay } from "@/components/noise-overlay";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 
-<<<<<<< HEAD
-=======
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
   maximumScale: 1,
   userScalable: false,
 };
-
->>>>>>> main
 export const metadata: Metadata = {
   title: "Nexloom — We Build What's Next",
   description:

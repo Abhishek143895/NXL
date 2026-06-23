@@ -20,10 +20,7 @@
 
 html {
   scroll-behavior: smooth;
-<<<<<<< HEAD
-=======
   overflow-x: clip;
->>>>>>> main
 }
 
 *:focus {
@@ -39,8 +36,6 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: var(--font-inter), system-ui, sans-serif;
-<<<<<<< HEAD
-=======
   overflow-x: clip;
 }
 
@@ -64,7 +59,6 @@ body {
   .navbar-custom {
     padding: 0.75rem 1rem;
   }
->>>>>>> main
 }
 
 .gradient-text {
